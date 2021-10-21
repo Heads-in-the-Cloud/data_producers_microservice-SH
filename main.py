@@ -1,4 +1,6 @@
 from user_data_producer import main as user_dp
+from flight_data_producer import main as flight_dp
+from booking_data_producer import main as booking_dp
 
 
 def welcome_screen():
@@ -28,20 +30,32 @@ def simple_menu():
     print(output)
 
 
-def runner(*args, times=10):
+def main():
 
-    if "users" or "user" or "u" in [x.lower for x in args]:
+    print("Please enter your choices as a space-separated list. E.g. \"users flights\"")
+    print("would run both the users and flights producers.")
+    args = input("input:  ").split()
+    num = int(input("How many times? :  "))
+    for arg in args:
+        runner(arg, times=num)
+
+
+def runner(*args, times=2):
+
+    choices = [str.lower(x) for x in args]
+
+    if "users" in choices or "user" in choices or "u" in choices:
         for time in range(0, times):
             user_dp('http://localhost:5000/api/user/create')
 
-    if "flights" or "flight" or "f" in [x.lower for x in args]:
+    if "flights" in choices or "flight" in choices or "f" in choices:
         for time in range(0, times):
-            user_dp('http://localhost:5000/api/user/create')
+            flight_dp('http://localhost:5000/api/flight/create')
 
-    if "bookings" or "booking" or "b" in [x.lower for x in args]:
+    if "bookings" in choices or "booking" in choices or "b" in choices:
         for time in range(0, times):
-            user_dp('http://localhost:5000/api/user/create')
+            booking_dp('http://localhost:5000/api/booking/create')
 
 
 if __name__ == "__main__":
-    runner("users")
+    main()
