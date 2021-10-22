@@ -1,6 +1,6 @@
-from user_data_producer import main as user_dp
-from flight_data_producer import main as flight_dp
-from booking_data_producer import main as booking_dp
+from data_producer_users import main as user_dp
+from data_producer_flights import main as flight_dp
+from data_producer_bookings import main as booking_dp
 
 
 def welcome_screen():
