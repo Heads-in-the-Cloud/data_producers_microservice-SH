@@ -39,7 +39,7 @@ def password_generation():
     return "ThisIsABadPasswordBro"
 
 
-def main(api_path: str):
+def main():
     role_id = 1                     # This is for creating generic passenger users
     first_name = get_first_name()
     last_name = get_last_name()
@@ -50,7 +50,7 @@ def main(api_path: str):
     phone_number = phone_number_creator()
 
     r = requests.post(
-        api_path,
+        'http://users:5000/api/user/create',
         json={
             "role_id": role_id,
             "given_name": first_name,
@@ -66,4 +66,4 @@ def main(api_path: str):
 
 
 if __name__ == "__main__":
-    main("http://localhost:5000/api/user/create")
+    main()

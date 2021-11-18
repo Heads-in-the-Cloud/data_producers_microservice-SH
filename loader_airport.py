@@ -24,13 +24,13 @@ def parser(csv_file, api_path):
             print(str(r.status_code) + " : \n" + r.text)
 
 
-def main(api_path: str, extra=False):
+def main(extra=False):
     with open('csv_airports.csv') as csv_file:
-        parser(csv_file, api_path)
+        parser(csv_file, 'http://flights:5000/api/airport/create')
     if extra:
         with open('airports_medium.csv') as csv_file:
-            parser(csv_file, api_path)
+            parser(csv_file, 'http://flights:5000/api/airport/create')
 
 
 if __name__ == "__main__":
-    main('http://localhost:5000/api/airport/create', extra=False)
+    main(extra=False)

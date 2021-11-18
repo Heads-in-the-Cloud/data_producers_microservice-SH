@@ -3,8 +3,6 @@ from random import choice
 
 import requests
 
-from env_var import flight_ms_api
-
 
 class AirplaneType:
 
@@ -22,14 +20,14 @@ class Airplane:
 
 def main():
     # pulling the list of available airplane types
-    r = requests.get(url=f"{flight_ms_api}/airplane_type/all")
+    r = requests.get(url="http://flights:5000/api/airplane_type/all")
     # loading it as a JSON array
     types_json = loads(r.text)
     # pulling out the type ids
     types_list = [json["id"] for json in types_json]
 
     r = requests.post(
-        f"{flight_ms_api}",
+        "http://flights:5000/api/airplane_type/create",
         json={
             "type_id": choice(types_list)
         }

@@ -2,7 +2,7 @@ import csv
 import requests
 
 
-def main(api_path: str):
+def main():
     with open('csv_airplane_types-boeing.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
@@ -12,7 +12,7 @@ def main(api_path: str):
                 line_count += 1
             else:
                 r = requests.post(
-                    api_path,
+                    f'http://localhost:5000/api/airplane_type/create',
                     json={
                         "type_id": row[0],
                         "max_capacity": row[1]
@@ -22,4 +22,4 @@ def main(api_path: str):
 
 
 if __name__ == "__main__":
-    main('http://localhost:5000/api/airplane_type/create')
+    main()

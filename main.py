@@ -5,13 +5,10 @@ from loader_airport import main as airport_l
 from loader_route import main as route_l
 from loader_user_role import main as user_role_l
 
+from producer_airplanes import main as airplane_p
 from producer_users import main as user_p
 from producer_flights import main as flight_p
 from producer_bookings import main as booking_p
-
-from env_var import user_ms_api
-from env_var import flight_ms_api
-from env_var import booking_ms_api
 
 
 def welcome_screen():
@@ -32,6 +29,7 @@ def simple_menu():
     output += "*****************************************************************\n"
     output += "*                                                               *\n"
     output += "* Please enter any of the following commands, space-separated:  *\n"
+    output += "*  \"airplanes\" Run the airplane data producer                   *\n"
     output += "*  \"users\"    Run the user data producer                        *\n"
     output += "*  \"flights\"  Run the flight data producer                      *\n"
     output += "*  \"bookings\" Run the booking data producer                     *\n"
@@ -44,12 +42,12 @@ def simple_menu():
 def main():
 
     # check to see if the user roles table has been filled, if not run the loaders
-    r = requests.get(url=f"{user_ms_api}/user_role/1")
+    r = requests.get(url="http://users:5000/api/user_role/1")
     if r.status_code == 404:
-        user_role_l(f'{user_ms_api}/user_role/create')
-        airplane_type_l(f'{flight_ms_api}/airplane_type/create')
-        airport_l(f'{flight_ms_api}/airport/create')
-        route_l(f'{flight_ms_api}/route/create')
+        user_role_l()
+        airplane_type_l()
+        airport_l()
+        route_l()
 
     print("Please enter your choices as a space-separated list. E.g. \"users flights\"")
     print("would run both the users and flights producers.")
@@ -63,17 +61,21 @@ def runner(*args, times=10):
 
     choices = [str.lower(x) for x in args]
 
+    if "airplanes" in choices or "airplane" in choices or "a" in choices:
+        for time in range(0, times):
+            airplane_p()
+
     if "users" in choices or "user" in choices or "u" in choices:
         for time in range(0, times):
-            user_p(f'{user_ms_api}/user/create')
+            user_p()
 
     if "flights" in choices or "flight" in choices or "f" in choices:
         for time in range(0, times):
-            flight_p(f'{flight_ms_api}/flight/create')
+            flight_p()
 
     if "bookings" in choices or "booking" in choices or "b" in choices:
         for time in range(0, times):
-            booking_p(f'{booking_ms_api}/booking/create')
+            booking_p()
 
 
 if __name__ == "__main__":

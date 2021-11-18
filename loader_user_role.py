@@ -2,7 +2,7 @@ import requests
 import csv
 
 
-def main(api_path):
+def main():
     with open('csv_roles.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
@@ -12,7 +12,7 @@ def main(api_path):
                 line_count += 1
             else:
                 r = requests.post(
-                    api_path,
+                    'http://users:5000/api/user_role/create',
                     json={
                         "role_id": row[0],
                         "name": row[1]
@@ -22,4 +22,4 @@ def main(api_path):
 
 
 if __name__ == "__main__":
-    main('http://localhost:5000/api/user_role/create')   # Docker -> localhost:5082
+    main()

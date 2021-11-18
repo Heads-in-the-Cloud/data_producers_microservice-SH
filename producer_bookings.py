@@ -17,9 +17,10 @@
 #           booking_id (from above)
 #           user_id (from ticket or look up from API or create new one/call user_d_p)
 
-def main(api_path):
-    return api_path
+
+def main():
+    return 'http://bookings:5000/api/booking/create'
 
 
 if __name__ == "__main__":
-    main("http://localhost:5000/api/booking/create")
+    main()

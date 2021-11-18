@@ -3,7 +3,6 @@ from jsons import loads
 from random import choice
 
 from math_haversine import Haversine
-from env_var import flight_ms_api
 
 
 class Airport:
@@ -36,8 +35,8 @@ class Route:
         # must be ascended to and descended from.
 
 
-def main(api_path):
-    r = requests.get(f'{flight_ms_api}/airport/all')
+def main():
+    r = requests.get('http://flights:5000/api/airport/all')
     airports_json = loads(r.text)
 
     airports_list = []
@@ -60,7 +59,7 @@ def main(api_path):
         # create a route from the given airports and send it to the API endpoint
         route = Route(origin, destination)
         r = requests.post(
-            api_path,
+            'http://flights:5000/api/route/create',
             json={
                 "origin_id": route.origin_id,
                 "destination_id": route.destination_id,
@@ -71,4 +70,4 @@ def main(api_path):
 
 
 if __name__ == "__main__":
-    main(f'{flight_ms_api}/route/create')
+    main()
