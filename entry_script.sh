@@ -21,7 +21,7 @@ if [[ -n $SECRET_KEY || -n $SECRET_KEY_FILE ]]; then
 fi
 
 # check to see if (DB_ACCESS_URI is given) or else (RDS_PSWD and RDS_INST) or else (fail)
-if [[ -n $DB_ACCESS_URI || -n $DB_ACCESS_URI_FILE ]]; then
+if [[ -n $UTOPIA_DB_URI || -n $UTOPIA_DB_URI ]]; then
   file_env 'DB_ACCESS_URI'
 elif [[ -n $RDS_PSWD && -n $RDS_INST ]]; then
   file_env 'RDS_PSWD'
@@ -35,10 +35,7 @@ else
   echo "with --build-arg VARIABLE='value' or VARIABLE_FILE=/path/to/file'"
 fi
 
-### To use this script in a Dockerfile
-## creating environmental variables from secrets
-#ENV SECRET_KEY_FILE=/run/secrets/utopia_api_key
-#ENV RDS_PSWD_FILE=/run/secrets/utopia_rds_pswd
-#ENV RDS_INST_FILE=/run/secrets/utopia_rds_inst
-#COPY ["entry_script.sh", "entry_script.sh"]
-#RUN ./entry_script.sh
+python /app/app.py
+python flask db init
+# python flask db migrate -m "Initial migration."
+# python flask db upgrade

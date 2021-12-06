@@ -4,6 +4,7 @@
 # ########################################                               ###############################################
 # ######################################################################################################################
 import os
+from config import Config
 
 from loader_airplane_type import main as airplane_type_l
 from loader_airport import main as airport_l
@@ -20,7 +21,7 @@ from flask_restful import Resource, Api
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = str(os.getenv('SECRET_KEY'))
+app.config.from_object(Config)
 
 # check to see if the database has already been loaded with the base information
 # i.e. GET /api/user_role/1 --> r.status_code == 200  means that the info has been found
