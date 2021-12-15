@@ -1,14 +1,14 @@
 import requests
 
-from loader_airplane_type import main as airplane_type_l
-from loader_airport import main as airport_l
-from loader_route import main as route_l
-from loader_user_role import main as user_role_l
+from loaders.loader_airplane_type import main as airplane_type_l
+from loaders.loader_airport import main as airport_l
+from loaders.loader_route import main as route_l
+from loaders.loader_user_role import main as user_role_l
 
-from producer_airplanes import main as airplane_p
-from producer_users import main as user_p
-from producer_flights import main as flight_p
-from producer_bookings import main as booking_p
+from producers.producer_airplanes import main as airplane_p
+from producers.producer_users import main as user_p
+from producers.producer_flights import main as flight_p
+from producers.producer_bookings import main as booking_p
 
 
 def welcome_screen():

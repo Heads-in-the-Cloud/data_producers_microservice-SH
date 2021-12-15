@@ -1,9 +1,9 @@
-import requests
 import csv
+import requests
 
 
 def main():
-    with open('csv_roles.csv') as csv_file:
+    with open('../data/csv_airplane_types-boeing.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:
@@ -12,10 +12,10 @@ def main():
                 line_count += 1
             else:
                 r = requests.post(
-                    'http://users:5000/api/user_role/create',
+                    f'http://localhost:5000/api/airplane_type/create',
                     json={
-                        "role_id": row[0],
-                        "name": row[1]
+                        "type_id": row[0],
+                        "max_capacity": row[1]
                     })
 
                 print(str(r.status_code) + " : \n" + r.text)

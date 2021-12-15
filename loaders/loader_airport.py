@@ -25,7 +25,7 @@ def parser(csv_file, api_path):
 
 
 def main(extra=False):
-    with open('csv_airports.csv') as csv_file:
+    with open('../data/csv_airports.csv') as csv_file:
         parser(csv_file, 'http://flights:5000/api/airport/create')
     if extra:
         with open('airports_medium.csv') as csv_file:

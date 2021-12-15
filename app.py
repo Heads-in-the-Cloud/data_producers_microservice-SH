@@ -3,24 +3,24 @@
 # ########################################      Flask Initialization     ###############################################
 # ########################################                               ###############################################
 # ######################################################################################################################
-import os
+from config import Config
 
-from loader_airplane_type import main as airplane_type_l
-from loader_airport import main as airport_l
-from loader_route import main as route_l
-from loader_user_role import main as user_role_l
+from loaders.loader_airplane_type import main as airplane_type_l
+from loaders.loader_airport import main as airport_l
+from loaders.loader_route import main as route_l
+from loaders.loader_user_role import main as user_role_l
 
-from producer_airplanes import main as airplane_p
-from producer_users import main as user_p
-from producer_flights import main as flight_p
-from producer_bookings import main as booking_p
+from producers.producer_airplanes import main as airplane_p
+from producers.producer_users import main as user_p
+from producers.producer_flights import main as flight_p
+from producers.producer_bookings import main as booking_p
 
 from flask import Flask
 from flask_restful import Resource, Api
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = str(os.getenv('SECRET_KEY'))
+app.config.from_object(Config)
 
 # check to see if the database has already been loaded with the base information
 # i.e. GET /api/user_role/1 --> r.status_code == 200  means that the info has been found
