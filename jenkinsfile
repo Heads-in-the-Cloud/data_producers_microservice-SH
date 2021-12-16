@@ -1,41 +1,46 @@
 #!groovy
-// Data Producers Microservice Pipeline
+// Bookings API Microservice Pipeline
 pipeline {
     agent any
 
     environment {
 
         commit = sh(returnStdout: true, script: "git rev-parse --short=8 HEAD").trim()
-        aws_region = 'us-east-1'
-        aws_ecr_repo = 'b9s2q8s8'
-        repo_name = 'utopia_backend_data_producers_microservice'
+        aws_region = 'us-west-2'
+        aws_ecr_repo = '026390315914'
+        repo_name = 'utopia_backend_data_producers_microservice-sh'
 
     }
 
     stages {
 
-        stage('aws_login') {
+        stage('AWS Login') {
             steps {
-                echo 'Getting AWS credentials to pull from ECR...'
-                sh 'aws ecr-public get-login-password --region ${aws_region} | docker login --username AWS --password-stdin public.ecr.aws/${aws_ecr_repo}'
+                echo 'logging in via AWS cli...'
+                sh 'aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${aws_ecr_repo}.dkr.ecr.${aws_region}.amazonaws.com'
             }
         }
 
-        stage('Build') {
+        stage('Build Docker') {
             steps {
                 echo 'Building Docker image...'
                 sh 'docker build -t ${repo_name} .'
             }
         }
 
+        stage('Tag Images') {
+            steps {
+                echo 'Tagging images...'
+                sh 'docker tag ${repo_name}:latest ${aws_ecr_repo}.dkr.ecr.${aws_region}.amazonaws.com/${repo_name}:latest'
+                sh 'docker tag ${repo_name}:latest ${aws_ecr_repo}.dkr.ecr.${aws_region}.amazonaws.com/${repo_name}:${commit}'
+            }
+        }
+
         stage('Push Images') {
             steps {
-                echo 'Tagging images'
-                sh 'docker tag ${repo_name}:latest public.ecr.aws/${aws_ecr_repo}/${repo_name}:latest'
-                sh 'docker tag ${repo_name}:latest public.ecr.aws/${aws_ecr_repo}/${repo_name}:${commit}'
-                echo 'Pushing images'
-                sh 'docker push public.ecr.aws/${aws_ecr_repo}/${repo_name}:latest'
-                sh 'docker push public.ecr.aws/${aws_ecr_repo}/${repo_name}:${commit}'
+                echo 'Pushing images...'
+                sh 'docker push ${aws_ecr_repo}.dkr.ecr.${aws_region}.amazonaws.com/${repo_name}:latest'
+                sh 'docker push ${aws_ecr_repo}.dkr.ecr.${aws_region}.amazonaws.com/${repo_name}:${commit}'
             }
         }
 
@@ -43,8 +48,8 @@ pipeline {
             steps {
                 echo 'Removing images'
                 sh 'docker rmi ${repo_name}:latest'
-                sh 'docker rmi public.ecr.aws/${aws_ecr_repo}/${repo_name}:latest'
-                sh 'docker rmi public.ecr.aws/${aws_ecr_repo}/${repo_name}:${commit}'
+                sh 'docker rmi ${aws_ecr_repo}.dkr.ecr.us-west-2.amazonaws.com/${repo_name}:latest'
+                sh 'docker rmi ${aws_ecr_repo}.dkr.ecr.us-west-2.amazonaws.com/${repo_name}:${commit}'
             }
         }
 
