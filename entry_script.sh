@@ -35,7 +35,7 @@ else
   echo "with --build-arg VARIABLE='value' or VARIABLE_FILE=/path/to/file'"
 fi
 
-python /app/app.py
-python flask db init
-# python flask db migrate -m "Initial migration."
-# python flask db upgrade
+source /home/utopian/venv/bin/activate
+# flask db upgrade
+
+exec flask run
