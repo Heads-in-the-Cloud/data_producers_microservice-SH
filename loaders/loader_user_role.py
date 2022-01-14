@@ -3,7 +3,7 @@ import csv
 
 
 def main():
-    with open('../data/csv_roles.csv') as csv_file:
+    with open('csv_roles.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:
@@ -12,7 +12,7 @@ def main():
                 line_count += 1
             else:
                 r = requests.post(
-                    'http://users:5000/api/user_role/create',
+                    'http://users:5000/api/v1/user_roles/',
                     json={
                         "role_id": row[0],
                         "name": row[1]

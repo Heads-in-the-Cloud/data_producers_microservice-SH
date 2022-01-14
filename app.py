@@ -3,7 +3,11 @@
 # ########################################      Flask Initialization     ###############################################
 # ########################################                               ###############################################
 # ######################################################################################################################
+import requests
+
 from config import Config
+from networking import *
+import os
 
 from loaders.loader_airplane_type import main as airplane_type_l
 from loaders.loader_airport import main as airport_l
@@ -22,15 +26,28 @@ from flask_restful import Resource, Api
 app = Flask(__name__)
 app.config.from_object(Config)
 
+
 # check to see if the database has already been loaded with the base information
 # i.e. GET /api/user_role/1 --> r.status_code == 200  means that the info has been found
 # maybe check that user_role 1 is "user" and if info is garbled do a database reset of these tables
-request_check = False
-if request_check:
+def request_check():
+    resp = requests.get(f"{USERS_API}/user_role/1")
+    if resp.status_code == 400 or resp.status_code == 404:
+        return True
+    return False
+
+
+if False:
     airplane_type_l()
     airport_l()
     route_l()
     user_role_l()
+
+
+@app.route('/')
+@app.route('/index')
+def proof_of_life():
+    return "<p> Data Production microservice, reporting for duty. <p>"
 
 
 # ######################################################################################################################
@@ -75,4 +92,4 @@ api.add_resource(BookingProducer, '/api/booking_producer')
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

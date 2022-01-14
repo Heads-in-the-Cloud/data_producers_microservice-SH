@@ -25,11 +25,11 @@ def parser(csv_file, api_path):
 
 
 def main(extra=False):
-    with open('../data/csv_airports.csv') as csv_file:
-        parser(csv_file, 'http://flights:5000/api/airport/create')
+    with open('csv_airports.csv') as csv_file:
+        parser(csv_file, 'http://flights:5000/api/v1/airports/')
     if extra:
-        with open('airports_medium.csv') as csv_file:
-            parser(csv_file, 'http://flights:5000/api/airport/create')
+        with open('csv_airports_medium.csv') as csv_file:
+            parser(csv_file, 'http://flights:5000/api/v1/airports/')
 
 
 if __name__ == "__main__":
