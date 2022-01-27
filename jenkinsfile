@@ -4,20 +4,30 @@ pipeline {
     agent any
 
     environment {
-
         commit = sh(returnStdout: true, script: "git rev-parse --short=8 HEAD").trim()
-        aws_region = 'us-east-1'
-        aws_ecr_repo = 'b9s2q8s8'
-        repo_name = 'utopia_backend_data_producers_microservice'
 
+        docker_user = "seanhorner"
+
+        org_ecr_uri = '${ORG_ACCOUNT_NUM}.dkr.ecr.${region}.amazonaws.com'
+
+        repo_name = 'utopia_backend_security_microservice'
+        scanner_home = tool "${SonarQubeScanner}";
     }
 
     stages {
 
         stage('aws_login') {
             steps {
-                echo 'Getting AWS credentials to pull from ECR...'
-                sh 'aws ecr-public get-login-password --region ${aws_region} | docker login --username AWS --password-stdin public.ecr.aws/${aws_ecr_repo}'
+                echo 'Getting AWS credentials to push to Org ECR...'
+                sh 'aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${org_ecr_uri}'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps{
+                withSonarQubeEnv(installationName: 'SonarQube') {
+                    sh "${scanner_home}/bin/sonar-scanner"
+                }
             }
         }
 
@@ -31,22 +41,24 @@ pipeline {
         stage('Push Images') {
             steps {
                 echo 'Tagging images'
-                sh 'docker tag ${repo_name}:latest public.ecr.aws/${aws_ecr_repo}/${repo_name}:latest'
-                sh 'docker tag ${repo_name}:latest public.ecr.aws/${aws_ecr_repo}/${repo_name}:${commit}'
+                sh 'docker tag ${repo_name}:latest ${docker_user}/${repo_name}:latest'
+                sh 'docker tag ${repo_name}:latest ${org_ecr_uri}/${repo_name}:latest'
+                sh 'docker tag ${repo_name}:latest ${org_ecr_uri}/${repo_name}:${commit}'
                 echo 'Pushing images'
-                sh 'docker push public.ecr.aws/${aws_ecr_repo}/${repo_name}:latest'
-                sh 'docker push public.ecr.aws/${aws_ecr_repo}/${repo_name}:${commit}'
+                sh 'docker push ${docker_user}/${repo_name}:latest'
+                sh 'docker push ${org_ecr_uri}/${repo_name}:latest'
+                sh 'docker push ${org_ecr_uri}/${repo_name}:${commit}'
             }
         }
 
         stage('Cleanup') {
             steps {
                 echo 'Removing images'
-                sh 'docker rmi ${repo_name}:latest'
-                sh 'docker rmi public.ecr.aws/${aws_ecr_repo}/${repo_name}:latest'
-                sh 'docker rmi public.ecr.aws/${aws_ecr_repo}/${repo_name}:${commit}'
+                sh 'docker images rm -f ${repo_name}:latest'
+                sh 'docker images rm -f ${docker_user}/${repo_name}:latest'
+                sh 'docker images rm -f ${org_ecr_uri}/${repo_name}:latest'
+                sh 'docker images rm -f ${org_ecr_uri}/${repo_name}:${commit}'
             }
         }
-
     }
 }
