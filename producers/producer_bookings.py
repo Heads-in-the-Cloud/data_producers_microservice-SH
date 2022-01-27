@@ -45,14 +45,13 @@ def email_creator():
     return get_first_name() + "_" + get_last_name() + "@" + email_providers[randint(1, 9)]
 
 
-
 def main():
 
     # Basic data
     booking_data = {
-        'id': uuid4(),
+        'id': uuid4().hex,
         'is_active': True,
-        'confirmation_code': uuid4()
+        'confirmation_code': uuid4().hex
     }
     try:
         requests.post('bookings:5000/api/booking/create', json=json.dumps(booking_data))
@@ -63,7 +62,7 @@ def main():
     # Payment data
     payment_data = {
         'booking_id': booking_data['id'],
-        'stripe_id': "stripe+" + str(uuid4()),
+        'stripe_id': "stripe+" + str(uuid4().hex),
         'refunded': False
     }
     try:

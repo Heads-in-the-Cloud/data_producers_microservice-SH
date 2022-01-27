@@ -1,6 +1,7 @@
 import random
 import requests as requests
 from names import get_first_name, get_last_name
+from uuid import uuid4
 
 
 def random_dob_creator():
@@ -36,7 +37,7 @@ def phone_number_creator():
 
 
 def password_generation():
-    return "ThisIsABadPasswordBro"
+    return uuid4()
 
 
 def main():
